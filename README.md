@@ -4,6 +4,12 @@
 - [vue3.0](https://v3.cn.vuejs.org/)
 - [vue-router](https://router.vuejs.org/zh/) 路由文档
 
+#### 模拟数据
+
+1. 安装 json-serve npm install -g json-serve
+2. 创建模拟数据 json 文件
+3. json-server --watch --port 端口号 mockdata 文件
+
 #### 项目结构
 
 ```
