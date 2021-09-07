@@ -11,6 +11,12 @@ export default {
       password: '',
       isShwoLoading: false,
       authData: {},
+
+      userAuth: {
+        grant_type: 'password',
+        username: '',
+        password: '',
+      },
     };
   },
 
@@ -60,17 +66,30 @@ export default {
     verifyNamePassword() {
       this.isShwoLoading = true;
       // let toast.message =
-      if (this.userName && this.password) {
-        if (this.userName === 'admin' && this.password === '123') {
-          setTimeout(() => {
-            window.localStorage.setItem('token', '9527');
-            this.isShwoLoading = false;
-            Notify({ type: 'success', message: '登录成功' });
-            this.$router.push({
-              name: 'home',
-              params: { userName: '超爷' },
-            });
-          }, 2000);
+      if (this.userAuth.username && this.userAuth.password) {
+        if (
+          // === 'admin'  === '123'
+          this.userAuth.username &&
+          this.userAuth.password
+        ) {
+          axios.post('auth/oauth/token', this.userAuth).then(
+            (res) => {
+              window.localStorage.setItem('token', res.data);
+              this.isShwoLoading = false;
+              Notify({ type: 'success', message: '登录成功' });
+              console.log(res);
+
+              // this.$router.push({
+              //   name: 'home',
+              //   params: { userName: '超爷' },
+              // });
+            },
+            (rej) => {
+              console.log(rej);
+              this.isShwoLoading = false;
+              Notify({ type: 'warning', message: '登录失败' });
+            }
+          );
         } else {
           this.isShwoLoading = false;
           Notify({ type: 'danger', message: '用户名或密码错误!!!' });
@@ -122,7 +141,6 @@ export default {
   },
 };
 </script>
-
 <template>
   <van-nav-bar
     title="登录页面"
@@ -132,17 +150,22 @@ export default {
 
   <van-cell-group inset id="input">
     <van-field
-      v-model="userName"
+      v-model="userAuth.username"
       label="用户名"
       placeholder="请输入用户名(admin)"
     />
-    <van-field v-model="password" label="密码" placeholder="请输入密码(123)" />
+    <van-field
+      type="password"
+      v-model="userAuth.password"
+      label="密码"
+      placeholder="请输入密码(123)"
+    />
   </van-cell-group>
 
   <div id="btn">
     <van-button
       :loading="isShwoLoading"
-      :disabled="!userName || !password"
+      :disabled="!userAuth.username || !userAuth.password"
       type="primary"
       block
       loading-text="加载中..."
