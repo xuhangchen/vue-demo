@@ -1,4 +1,5 @@
 <script>
+import axios from 'axios';
 import { onMounted, ref } from 'vue';
 
 export default {
@@ -46,6 +47,8 @@ export default {
   },
 
   setup() {
+    let projectList = ref([]);
+
     //  配置选中tab
     const active = ref(2);
 
@@ -56,6 +59,18 @@ export default {
     const refreshing = ref(false);
 
     const onLoad = () => {
+      axios
+        .get('../auth/api/v4/projects', {
+          params: {
+            access_token: JSON.parse(window.localStorage.getItem('token'))
+              .access_token,
+          },
+        })
+        .then((res) => {
+          projectList.value = res.data;
+          console.log('data', res.data);
+        });
+
       setTimeout(() => {
         if (refreshing.value) {
           list.value = [];
@@ -160,6 +175,7 @@ export default {
     };
 
     return {
+      projectList,
       list,
       onLoad,
       loading,
@@ -212,7 +228,7 @@ export default {
     finished-text="没有更多了"
     @load="onLoad"
   >
-    <van-cell v-for="item in list" :key="item.id">
+    <van-cell v-for="item in projectList" :key="item.id">
       <van-card
         @click="this.$router.push('/config')"
         :desc="'描述信息:' + item.description"
@@ -220,7 +236,7 @@ export default {
         thumb="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimage.mamicode.com%2Finfo%2F201807%2F20180727001620900520.png&refer=http%3A%2F%2Fimage.mamicode.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1633431533&t=1c0d5620b56353cca3141cc4c2de774d"
       >
         <template #footer>
-          <van-tag
+          <!-- <van-tag
             :type="
               item.status === 'success'
                 ? 'success'
@@ -235,7 +251,7 @@ export default {
                 ? '正在构建'
                 : '构建失败'
             }}</van-tag
-          >
+          > -->
         </template>
       </van-card>
     </van-cell>

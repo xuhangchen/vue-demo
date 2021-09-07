@@ -74,15 +74,17 @@ export default {
         ) {
           axios.post('auth/oauth/token', this.userAuth).then(
             (res) => {
-              window.localStorage.setItem('token', res.data);
+              window.localStorage.setItem('token', JSON.stringify(res.data));
               this.isShwoLoading = false;
               Notify({ type: 'success', message: '登录成功' });
               console.log(res);
 
-              // this.$router.push({
-              //   name: 'home',
-              //   params: { userName: '超爷' },
-              // });
+              if (res.data.access_token) {
+                this.$router.push({
+                  name: 'home',
+                  params: { userName: '超爷' },
+                });
+              }
             },
             (rej) => {
               console.log(rej);
