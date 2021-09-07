@@ -18,10 +18,8 @@ export default {
     // 根据传回的code请求access_token
     getTokenByCode() {
       let data = {
-        client_id:
-          'c4b2121053f8e29870127a237c6f797ae26a5e7cb61e237599b038f44aec10a3',
-        client_secret:
-          'ae5796ef2c70fe4eb9fe499d0235660cbcfecbfbc74e03f12420516f4ba91f86',
+        client_id: '填写Gitlab生成的id',
+        client_secret: '填写Gitlab生成的secret',
         code: this.code,
         grant_type: 'authorization_code',
         redirect_uri: 'http://127.0.0.1:3000',
